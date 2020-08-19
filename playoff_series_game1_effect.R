@@ -39,7 +39,7 @@ for(j in unique(x$series_code)){
   print(count)
 }
 
-# z <- do.call('rbind', dat)
+z <- do.call('rbind', dat)
 # fit <- lm(score_game_2 ~ score_game_1 + pd_dif_reg_season,
 #           data = z)
 # summary(fit)
