@@ -43,7 +43,7 @@ sched_2020 <- function(year){
   # month tells it where to start
   
   #This function has the year 2018 hard-coded into it
-  months.all <- c("october", "november", "december", "january","february","march","july","august")
+  months.all <- c("october", "november", "december", "january","february","march","july","august","september")
   
   for(mon in months.all){
     
