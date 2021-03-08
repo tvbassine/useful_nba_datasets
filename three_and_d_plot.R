@@ -1,7 +1,11 @@
-# Get the player with the most true shooting attempts per team.
-# Merge with true shooting percentage.
+# 3 And D Plot
+# Purpose: scrape basketball-reference and to get 3P% and DBPM and make a nice plot.
+# Date: 3/8/2021
 
-source('~/Desktop/Threes and Layups Articles/Useful Things/player_overall_scraper_function.R')
+library(ggplot2)
+library(ggrepel)
+
+source('https://raw.githubusercontent.com/tvbassine/useful_nba_datasets/master/player_overall_scraper_function.R')
 
 # GET STATS:
 ad <- pl_overall_scrape(yr = 2021, id = 'advanced')
@@ -9,6 +13,7 @@ tot <- pl_overall_scrape(yr = 2021, id = 'totals')
 ad$yr = 2021
 tot$yr = 2021
 
+# Remove combined entries (i.e. players who played on more than 1 team)
 ad <- ad[ad$team_id != '',]
 ad$id_tm <- paste(ad$id, ad$team_id, sep = '_')
 tot <- tot[tot$team_id != '',]
@@ -22,10 +27,11 @@ y <- data.frame(y)
 summary(y$fg3a)
 sum(y$fg3a >= 100)
 
+# Restrict to 100 3PA
 z <- y[y$fg3a >= 100,]
 plot(z$fg3_pct, z$dbpm)
 
-
+# Get labels to put on graph for select players:
 z$last_nm <- 0
 for(i in 1:nrow(z)){
   temp <- unlist(strsplit(z$name.x[i], split = ','))[1]
@@ -36,13 +42,11 @@ z$label_restrict <- NA
 z$label_restrict[z$fg3_pct >= .4 & z$dbpm >= 0.5] <- z$last_nm[z$fg3_pct >= .4 & z$dbpm >= 0.5]
 z$label_restrict[z$fg3_pct >= .45] <- z$last_nm[z$fg3_pct >= .45]
 z$label_restrict[z$fg3_pct >= .425 & z$dbpm >= 0] <- z$last_nm[z$fg3_pct >= .425 & z$dbpm >= 0]
-z$label_restrict[z$dbpm >= 1] <- z$last_nm[z$dbpm >= 1]
+z$label_restrict[z$dbpm >= 1.3] <- z$last_nm[z$dbpm >= 1.3]
 
-z$pt_size <- z$fg3a / 60
+z$pt_size <- z$fg3a / 90
 
-library(ggplot2)
-library(ggrepel)
-
+# Make ggplot:
 b <- ggplot(data = z, aes(x = fg3_pct, y=dbpm, label = label_restrict)) + 
   geom_point(col = 'blue', size = z$pt_size) + 
   geom_text_repel() + 
@@ -65,4 +69,8 @@ b <- ggplot(data = z, aes(x = fg3_pct, y=dbpm, label = label_restrict)) +
         plot.background = element_rect(fill = "lightblue")) +
   annotate(geom = 'text', x = .48, y = 1.8, label = 'Circle size proportional\n to 3FGA',
            size = 5)
+
 b
+# Save the plot (can change directory)
+ggsave("~/Documents/three_and_d_plot.png", dpi = 400,
+       height = 5.5, width = 8)
