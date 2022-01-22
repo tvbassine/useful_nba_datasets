@@ -56,8 +56,8 @@ p = ggplot(y, aes(gameNumber, player, fill= mp, label = mp)) +
 p
 
 
-# Save your plot:
-# ggsave(paste0('~/Documents/misc_nba_stuff/nets_playing_time/nets_playing_time_', Sys.Date(), '.png'), 
-#        dpi = 370,
-#        height = 5.5, width = 8)
+#Save your plot:
+ggsave(paste0('~/Documents/misc_nba_stuff/nets_playing_time/nets_playing_time_', Sys.Date(), '.png'),
+       dpi = 370,
+       height = 5.5, width = 10)
 
