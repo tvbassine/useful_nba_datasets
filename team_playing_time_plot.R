@@ -1,16 +1,17 @@
 # Generic playing time function for a given team:
 
 # Enter the team you wish to examine here
-tm_nm = 'Washington Wizards'
+tm_nm = 'Brooklyn Nets'
 
 # Need to install nbastatR if youi have not already.
 library(nbastatR)
 library(ggplot2)
 library(dplyr)
+library(scales)
 
 # I needed to change this setting to read in the data for game_logs, 
 # so uncomment if you need to.
-# Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
+Sys.setenv("VROOM_CONNECTION_SIZE" = 131072 * 2)
 
 x = game_logs(seasons = 2022)
 nets = x[x$nameTeam == tm_nm,]
@@ -34,10 +35,11 @@ out = out[order(out$mp, decreasing = F),]
 
 y$player = factor(y$namePlayer, levels = out$namePlayer)
 
-p = ggplot(y, aes(gameNumber, player, fill= mp)) + 
+p = ggplot(y, aes(gameNumber, player, fill= mp, label = mp)) + 
   geom_tile() +
+  geom_text(size = 2.3) +
   xlab('Game Number') + ylab('') +
-  scale_fill_gradient(low = "white", high = "red") + 
+  scale_fill_gradient(low = "white", high = muted("lightblue")) + 
   labs(fill = 'Minutes Played') +
   ggtitle(paste0(tm_nm, ' Playing Time By Game'),
           subtitle = 'Plot by @tvbassine | Data from nbastatR package') +
